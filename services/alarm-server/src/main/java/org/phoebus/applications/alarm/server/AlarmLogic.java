@@ -349,9 +349,12 @@ public class AlarmLogic // implements GlobalAlarmListener
                           >= SeverityLevel.INVALID.getAlarmUpdatePriority();
 
             return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
+
+			// If the alarm message is different at the same alarm severity, a new alarm occurs.
 			boolean severity_message = (current_state.severity.getAlarmUpdatePriority()+1 == alarm_state.severity.getAlarmUpdatePriority() &&
 	    				!current_state.message.equals(alarm_state.getMessage()));
 
+			// If the alarm severity priority is applied and the alarm message level is different, a new alarm occurs.
 			if(!severity_message && current_state.severity != SeverityLevel.OK)
 			{
 				try {
