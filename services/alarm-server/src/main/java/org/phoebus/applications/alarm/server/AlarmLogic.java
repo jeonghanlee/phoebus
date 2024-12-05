@@ -349,7 +349,21 @@ public class AlarmLogic // implements GlobalAlarmListener
                           >= SeverityLevel.INVALID.getAlarmUpdatePriority();
 
             return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
-            if (return_to_ok)
+			boolean severity_message = (current_state.severity.getAlarmUpdatePriority()+1 == alarm_state.severity.getAlarmUpdatePriority() &&
+	    				!current_state.message.equals(alarm_state.getMessage()));
+
+			if(!severity_message && current_state.severity != SeverityLevel.OK)
+			{
+				try {
+					String current_prefix = current_state.getMessage().substring(0,2);
+					String alarm_prefix = alarm_state.getMessage().substring(0,2);
+					severity_message = current_prefix.equals(alarm_prefix)?false:true;
+				}catch(Exception ex) {
+					logger.info("SubString Exception>>>>>" + ex );
+				};
+			};
+
+            if (return_to_ok || severity_message)
                 alarm_state = AlarmState.createClearState(received_state.value, received_state.time);
         }
         // Out of sync'ed section
